@@ -97,6 +97,20 @@ WAKE 检测到
 2. 准备一个音效文件，命名为 `sound.wav`，放到同一目录。**本仓库不附带任何音频**（`.gitignore` 已排除 `sound.wav`）：自己录制，或使用 CC0 / 无版权音效（如 freesound.org 上标注 CC0 的素材）
 3. 右键 `install.ps1` → 使用 PowerShell 运行（不需要管理员）
 
+### 方式二（更省事）：Python 一键安装器
+
+不想碰 PowerShell 的话，双击/运行 `install.py`（需要 Python 3.8+）：
+
+```bash
+python install.py
+```
+
+按提示**把音频文件拖进窗口、回车**，它会自动完成：复制音效 → 设置开机自启 → 启动监听。
+**想换音效就再运行一次**，给个新路径就行（旧音效会备份成 `sound.wav.bak`）。
+
+- 支持 `.wav`；`mp3/m4a/ogg` 需要电脑上有 `ffmpeg` 才会自动转换
+- 也可以直接带参数：`python install.py "D:\music\ding.wav"`
+
 `install.ps1` 会做四件事：
 
 - 在 `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` 写入 `LidOpenSound` 自启项（登录后隐藏启动）
