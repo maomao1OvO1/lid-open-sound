@@ -122,6 +122,48 @@ Run `uninstall.ps1`: removes the autostart entry and stops the watcher.
 - Windows 10 / 11, Windows PowerShell 5.1 (built in — PowerShell 7 not required)
 - Must run in a **user session** (not as a service — services cannot play audio to the desktop)
 
+## FAQ
+
+**Q: Which laptops are supported?**
+
+A: Any laptop that actually sleeps on lid close (S3 or modern standby). This tool does not read ACPI lid state and does not depend on firmware lid events: it detects "the process was frozen and resumed", so it is machine- and firmware-independent. The only case that never triggers is a power policy where closing the lid does nothing — the machine never sleeps, so there is nothing to resume from.
+
+**Q: Why play when the desktop appears instead of the moment the lid opens?**
+
+A: Audio hardware. Measured right after resume, playbacks at +4 s and +7 s were inaudible (the same file plays fine manually): the HDA codec needs several seconds to come back. Playing once the lock screen is gone is both reliable and audible — this is by design, not lag.
+
+**Q: How much memory does it use?**
+
+A: One resident PowerShell process (Windows 5.1, runtime not bundled). Measured on this machine: about **60 MB** working set, about 58 MB private; roughly 4 s of CPU over 50 minutes. The log only grows on start/wake/play (~4 KB per run).
+
+**Q: Does it need admin rights or touch system settings?**
+
+A: Neither. It writes one per-user autostart value under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`. No HKLM, no driver, no service, no power-policy changes.
+
+**Q: Can it play twice, or race with a second copy?**
+
+A: No. A named mutex (`LidOpenSoundSingleInstance`) keeps it single-instance; each wake plays once; the play call is blocking and the timing baseline is reset afterwards, so the block is not mistaken for a second wake.
+
+**Q: Does it send any data?**
+
+A: No. It reads a local `sound.wav` and plays it: no network, no telemetry, no account.
+
+**Q: Why not use the Windows power events?**
+
+A: Because hidden processes never receive them. All three approaches tested (`SystemEvents.PowerModeChanged`, adding a hidden Form to pump messages, `Register-WmiEvent Win32_PowerManagementEvent`) failed — see "Pitfall 1".
+
+**Q: How does it compare to similar tools?**
+
+A: Facts only: LidSound's app and its five built-in sounds are free, but **changing the sound to your own costs US$19.90, one-time and machine-bound**; its repo contains 8 files with no source code, and its `LICENSE` has been a proprietary EULA since 2026-10-11 (no redistribution, resale or reverse engineering) while the README still shows an MIT badge. This project publishes all of its source under MIT and changing the sound is free. Its own FAQ states that a few machines whose firmware does not report the lid state fall back to playing on resume; this project does not depend on firmware reports.
+
+**Q: How do I uninstall?**
+
+A: Run `uninstall.ps1` (removes the autostart entry and stops the watcher), then delete the folder. No registry leftovers.
+
+**Q: Does it work on desktops, or on machines that only lock the screen?**
+
+A: No. It detects resume from sleep; a desktop has no lid, and a screen lock without sleep produces no wall-clock jump.
+
 ## Cheat sheet
 
 | Need | How | Why |
