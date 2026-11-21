@@ -97,6 +97,20 @@ Before playing it also waits for `Audiosrv`, and uses the `PlaySync()` duration 
 2. Put a `sound.wav` next to the scripts. **No audio is shipped in this repo** (`.gitignore` excludes `sound.wav`): record your own, or use a CC0 / public-domain sound (e.g. CC0 samples on freesound.org)
 3. Right-click `install.ps1` → *Run with PowerShell* (no admin needed)
 
+### Option 2 (easier): Python one-click installer
+
+If you would rather not touch PowerShell, run `install.py` (needs Python 3.8+):
+
+```bash
+python install.py
+```
+
+Drag your audio file into the window and press Enter. It copies the sound, sets up autostart and starts the watcher.
+**Run it again to change the sound** — the old one is backed up as `sound.wav.bak`.
+
+- `.wav` is supported directly; `mp3/m4a/ogg` need `ffmpeg` on the machine to be converted
+- You can also pass the path directly: `python install.py "D:\music\ding.wav"`
+
 `install.ps1` will:
 
 - add a per-user autostart entry `LidOpenSound` under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`
