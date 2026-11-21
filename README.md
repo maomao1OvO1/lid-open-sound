@@ -12,13 +12,15 @@ Windows 笔记本「合盖睡眠 → 开盖唤醒 → 输密码 → **进桌面�
 
 ## 为什么写这个
 
-同类工具中有一个 [LidSound](https://github.com/Jax-DevinLabs/LidSound)（仓库挂 MIT 许可证，.NET，Windows 开盖音效）：内置 5 段音效免费，**换成自己的音频需 US$19.90 一次性买断**，授权按机器绑定（一机一码，以上价格与授权方式出自其 README）。本仓库免费、MIT，音效可自行替换，并在「解锁进桌面」那一刻播放。
+同类工具中有一个 [LidSound](https://github.com/Jax-DevinLabs/LidSound)（.NET，Windows 开盖音效）：内置 5 段音效免费，**换成自己的音频需 US$19.90 一次性买断**，授权按机器绑定（一机一码，以上价格与授权方式出自其 README）。本仓库免费、MIT，音效可自行替换，并在「解锁进桌面」那一刻播放。
 
 它其实不需要驱动、不需要管理员权限、不需要安装包，一个 PowerShell 脚本 + 一个 wav 就能做完——但有几个坑得先踩明白。这个仓库把踩过的坑和最终方案都写下来了，MIT 协议，随便用。
 
 > 一个需要说明的事实：截至 2026-11，它的 GitHub 仓库共 8 个文件（`README.md`、`CHANGELOG.md`、`LICENSE`、`docs/用户手册.md`、`docs/隐私说明.md`、`.gitignore`、两个 issue 模板），**没有源码文件**（`.cs` / `.csproj` / `.sln` 数量为 0）；对外发布的是 Releases 里的编译产物（`LidSound-Setup.exe`、`LidSound-Portable.zip`）。
 >
-> 以上信息取自其仓库文件树（`git/trees/HEAD?recursive=1`）与 Releases 列表；若对方后续公开源码，以最新仓库为准。
+> 其 `LICENSE` 自 **2026-10-11 起为专有 EULA**（此前以 MIT 发布的版本仍适用 MIT），条款包含禁止再分发、倒卖与逆向；而 README 里内嵌的 license 徽章目前仍显示 MIT，GitHub API 对该仓库的识别结果为 `NOASSERTION / Other`。
+>
+> 以上信息取自其仓库文件树（`git/trees/HEAD?recursive=1`）、`LICENSE` 原文与提交记录；若对方后续调整，以最新仓库为准。
 >
 > 本仓库的源码全部在仓库里，可直接阅读与修改。
 
