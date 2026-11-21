@@ -24,6 +24,8 @@ Windows 笔记本「合盖睡眠 → 开盖唤醒 → 输密码 → **进桌面�
 >
 > 其 `LICENSE` 自 **2026-10-11 起为专有 EULA**（此前以 MIT 发布的版本仍适用 MIT），条款包含禁止再分发、倒卖与逆向；而 README 里内嵌的 license 徽章目前仍显示 MIT，GitHub API 对该仓库的识别结果为 `NOASSERTION / Other`。
 >
+> 另外，它只在**开盖**时播放（由 Windows 电源事件驱动），不会等到解锁。
+>
 > 以上信息取自其仓库文件树（`git/trees/HEAD?recursive=1`）、`LICENSE` 原文与提交记录；若对方后续调整，以最新仓库为准。
 >
 > 本仓库的源码全部在仓库里，可直接阅读与修改。
