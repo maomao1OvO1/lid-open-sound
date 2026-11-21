@@ -12,14 +12,16 @@ Plays a custom sound **the moment you reach the desktop** after opening your lap
 
 ## Why this exists
 
-There is an open-source (well, see below) tool for this called [LidSound](https://github.com/Jax-DevinLabs/LidSound): it ships five built-in sounds for free, but **changing the sound to your own costs US$19.90, one-time, bound to one machine** (`license.dat`, one license per device).
+A similar tool exists: [LidSound](https://github.com/Jax-DevinLabs/LidSound) — a .NET Windows lid sound app whose repository carries an MIT license. It ships five built-in sounds for free; **changing the sound to your own costs US$19.90, one-time, bound to one machine** (`license.dat`, one license per device — price and licensing as stated in its README).
 
-Two things worth knowing before you pay:
+Two facts about that repository, as of 2026-11:
 
-1. **Its "open source" is documentation-only.** As of 2026-11, the LidSound GitHub repo contains **8 files — all Markdown/config, zero source files** (`.cs` / `.csproj` / `.sln` count: 0). What you actually get are prebuilt binaries from Releases (`LidSound-Setup.exe`, `LidSound-Portable.zip`). MIT license, no source: you cannot read the code you are asked to pay for, let alone modify it.
-2. **It only fires "when the lid opens"**, using Windows power events. It cannot wait until you have unlocked the machine.
+1. **No source code is published.** The repo contains 8 files — `README.md`, `CHANGELOG.md`, `LICENSE`, two files under `docs/`, `.gitignore`, and two issue templates — and **zero source files** (`.cs` / `.csproj` / `.sln` count: 0). Binaries are distributed through Releases (`LidSound-Setup.exe`, `LidSound-Portable.zip`).
+2. **It plays on lid open**, driven by Windows power events; it does not wait for the unlock.
 
-This repo is the opposite: every line is here, MIT, free, and it plays the sound at the right moment.
+Source: its repository file tree (`git/trees/HEAD?recursive=1`) and Releases list; if source code is published later, the repository as it stands then governs.
+
+This repo differs in one concrete way: the full source is here, MIT, readable and modifiable. Changing the sound is free, and it plays when the desktop appears.
 
 ## What it does
 
