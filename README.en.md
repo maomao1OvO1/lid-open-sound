@@ -4,6 +4,8 @@ English | [中文](README.md)
 
 Close the lid → open it → type your password → **the moment the desktop appears**, play a sound you chose.
 
+**No packing, no obfuscation, no hidden implementation: source, build steps and logs are all public.**
+
 ![platform](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011-lightgrey)
 ![powershell](https://img.shields.io/badge/PowerShell-5.1%2B-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
