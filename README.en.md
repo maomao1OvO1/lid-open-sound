@@ -1,0 +1,135 @@
+# lid-open-sound
+
+Plays a custom sound **the moment you reach the desktop** after opening your laptop lid.
+
+![platform](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011-lightgrey)
+![powershell](https://img.shields.io/badge/PowerShell-5.1%2B-blue)
+![license](https://img.shields.io/badge/license-MIT-green)
+
+[中文](README.md) | English
+
+---
+
+## Why this exists
+
+There is an open-source (well, see below) tool for this called [LidSound](https://github.com/Jax-DevinLabs/LidSound): it ships five built-in sounds for free, but **changing the sound to your own costs US$19.90, one-time, bound to one machine** (`license.dat`, one license per device).
+
+Two things worth knowing before you pay:
+
+1. **Its "open source" is documentation-only.** As of 2026-11, the LidSound GitHub repo contains **8 files — all Markdown/config, zero source files** (`.cs` / `.csproj` / `.sln` count: 0). What you actually get are prebuilt binaries from Releases (`LidSound-Setup.exe`, `LidSound-Portable.zip`). MIT license, no source: you cannot read the code you are asked to pay for, let alone modify it.
+2. **It only fires "when the lid opens"**, using Windows power events. It cannot wait until you have unlocked the machine.
+
+This repo is the opposite: every line is here, MIT, free, and it plays the sound at the right moment.
+
+## What it does
+
+| Situation | Behaviour |
+|---|---|
+| Close lid → open lid → type password → desktop appears | one sound, right as the desktop shows |
+| Close lid → open lid (no password set) | one sound, 8 s after resume |
+| Lid open, never unlocked | no sound (gives up after 5 minutes) |
+| User logon | starts automatically, hidden window, no console flash |
+
+Features:
+
+- Pure PowerShell + VBS: **no admin rights, no driver, no installer**
+- Single-instance mutex — never double-plays
+- `events.log` records every wake / play attempt with timings
+- Change the sound by replacing `sound.wav` — no code edits
+
+## How it works (the three pitfalls are the interesting part)
+
+### Pitfall 1: Windows power events never arrive in a hidden process
+
+The obvious approach is `SystemEvents.PowerModeChanged`. Measured on a hidden PowerShell process, it does not work at all:
+
+| Approach | Result |
+|---|---|
+| `Register-ObjectEvent SystemEvents.PowerModeChanged` | only the startup log line, no Suspend/Resume |
+| Hidden Form + `[Windows.Forms.Application]::Run($form)` to pump messages | still nothing |
+| `Register-WmiEvent Win32_PowerManagementEvent -Action` | still nothing (the `-Action` block is never scheduled while the script sits in `while { Start-Sleep }`) |
+
+Don't waste time on power events. Use a different signal.
+
+### Pitfall 2: the audio codec is dead for several seconds after resume
+
+The HDA codec is powered down during sleep and needs to be reinitialised. In practice, playing 4 s and 7 s after resume produced **no audible sound**, while the same file played manually works fine. A `PlaySync()` call returning after ~1.2 s does **not** mean the sound reached the speakers.
+
+### Pitfall 3: the process is frozen → use a wall-clock gap
+
+While the machine is in S3, the process is frozen but the wall clock keeps running:
+
+```powershell
+Start-Sleep -Milliseconds 500
+$gap = ([DateTime]::UtcNow - $lastCheck).TotalSeconds
+if ($gap -ge 2.2) { <just resumed> }
+```
+
+A normal iteration takes 0.5 s. A sudden gap of 2.2 s or more can only mean the process was frozen — the most reliable "just woke up" signal there is, no system events required.
+
+### Final timing: wait for the lock screen to disappear
+
+`LogonUI.exe` runs while the machine is locked and exits the moment you unlock:
+
+```
+resume detected
+  └─ poll LogonUI every 500 ms
+       ├─ lock screen seen, then LogonUI gone → play once (the desktop moment)
+       ├─ no lock screen ever appeared        → play 8 s after resume
+       └─ nobody unlocked for 5 minutes       → give up
+```
+
+Before playing it also waits for `Audiosrv`, and uses the `PlaySync()` duration as a sanity check (under 500 ms = audio endpoint not ready, retry up to 3 times).
+
+## Install
+
+1. Download or clone this repo to any folder, e.g. `D:\tools\lid-open-sound`
+2. Put a `sound.wav` next to the scripts (any `.wav` works)
+3. Right-click `install.ps1` → *Run with PowerShell* (no admin needed)
+
+`install.ps1` will:
+
+- add a per-user autostart entry `LidOpenSound` under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`
+- start the watcher immediately
+- print the current state and the log path
+
+> Only HKCU is touched. Nothing system-wide, uninstalls cleanly.
+
+## Uninstall
+
+Run `uninstall.ps1`: removes the autostart entry and stops the watcher.
+
+## Test / troubleshoot
+
+- `test-play.ps1` — plays `sound.wav` once, so you can verify volume, output device and the file itself
+- `events.log` — startup, wake detection, audio readiness and play durations
+  - `PLAY` present but silent → audio device / volume issue
+  - no `WAKE detected` at all → the watcher is not running
+- Sensitivity: change `2.2` (seconds) in the script. 2–3 s suits most laptops; lower values may be triggered by system hiccups
+
+## Known limitations
+
+- Only reacts to **sleep/hibernate resume**; a "do nothing on lid close" power policy never triggers it
+- Uses `LogonUI.exe` to detect the lock screen (works on Windows 10/11); machines without a password use the 8 s fallback
+- On machines with a slow audio codec the first playback may be delayed a few seconds
+- If the watcher is killed (some "optimizer" tools do this), it comes back on next logon
+
+## Compatibility
+
+- Windows 10 / 11, Windows PowerShell 5.1 (built in — PowerShell 7 not required)
+- Must run in a **user session** (not as a service — services cannot play audio to the desktop)
+
+## Cheat sheet
+
+| Need | How | Why |
+|---|---|---|
+| Know "we just woke up" | wall-clock gap ≥ 2.2 s | power events don't arrive in hidden processes |
+| Wait for audio | `Wait-AudioReady` + `PlaySync` duration check | first streams after resume get swallowed |
+| Know "desktop is up" | `LogonUI.exe` disappeared | it lives until unlock |
+| Never double-play | named Mutex + reset baseline after blocking play | multi-instance / blocking both cause repeats |
+
+## License
+
+MIT © 2026 maomao1OvO1
+
+This tool only plays a local wav file. No network, no telemetry.
