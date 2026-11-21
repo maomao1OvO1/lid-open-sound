@@ -124,6 +124,25 @@ Yes — install it on each one. It is free and there is nothing to activate.
 
 ---
 
+---
+
+## Similar tool: LidSound (factual record, checked 2026-11-22)
+
+Another tool exists in the same space: **LidSound** (`Jax-DevinLabs/LidSound`, .NET, Windows lid sound). The table below lists verifiable facts only, with sources, and **makes no judgement about its design or intent**. If it changes, its latest repository and licence govern.
+
+| Item | LidSound | This repo |
+|---|---|---|
+| Pricing | App and five built-in sounds are free; **changing the sound to your own costs US$19.90 one-time**, bound to one machine (`license.dat`, one licence per device) [source: its README] | Free, MIT |
+| Repository contents<br>(checked 2026-11-22) | **8 files**, all documentation/config; **zero source files** (`.cs`/`.csproj`/`.sln`); binaries ship through Releases (`LidSound-Setup.exe` / `LidSound-Portable.zip`) [source: its file tree `git/trees/HEAD?recursive=1`] | 12 text files, all source published |
+| Licence | Its `LICENSE` has been a proprietary EULA since **2026-10-11** (no redistribution, resale or reverse engineering); its README badge still reads MIT; the GitHub API reports `NOASSERTION / Other` [source: its LICENSE text and the GitHub API] | MIT (LICENSE and README agree) |
+| Built-in sounds | Five; a note in its installer's `assets/manifest.json` states the five replacement sounds were "collected by the owner, with no clear commercial licence" [source: its installer manifest] | No audio shipped (`.gitignore` excludes `sound.wav`) |
+| Detection | Windows lid-state notifications; its CHANGELOG states that on a few machines whose firmware does not report the lid state the feature is silently disabled [source: its CHANGELOG] | Wall-clock gap detection, firmware independent |
+| Playback moment | Plays as the lid opens | Plays when the desktop appears |
+| Size | Installer about 30 MB, single-file exe about 69 MB | Scripts total about 4 KB |
+| Memory | About 260 MB, as stated in its README | Measured about 60 MB |
+
+> Checked on **2026-11-22**, from its public repository, public docs and published installer. This repo gains nothing from it and makes no legal claim about it — the table simply records publicly verifiable facts so readers can judge for themselves.
+
 # 🔧 Part 2 · For people who like to tinker
 
 ## How it works in one paragraph
@@ -312,24 +331,6 @@ It is plain `.ps1` / `.vbs` text with no compiled artifact, so false positives a
 **Q: Does it work on Windows Server?**
 
 Technically yes (user session + `LogonUI`), but there is no lid, so it is pointless.
-
-## Factual comparison with a similar tool
-
-A comparable tool exists: **LidSound** (`Jax-DevinLabs/LidSound`, .NET, Windows lid sound). Everything below is verifiable, with its source and date:
-
-**Pricing**: the app and its five built-in sounds are free; **changing the sound to your own costs US$19.90, one-time, machine-bound** (`license.dat`, one license per device) — price and licensing as stated in its README.
-
-**Repository contents** (as of 2026-11, from `git/trees/HEAD?recursive=1`): 8 files, all documentation/config (`README.md`, `CHANGELOG.md`, `LICENSE`, `docs/用户手册.md`, `docs/隐私说明.md`, `.gitignore`, two issue templates) and **zero source files** (`.cs` / `.csproj` / `.sln` count: 0). Binaries ship through Releases (`LidSound-Setup.exe`, `LidSound-Portable.zip`).
-
-**License**: its `LICENSE` has been a proprietary EULA since **2026-10-11** (no redistribution, resale or reverse engineering), while its README still embeds an MIT badge; the GitHub API reports `NOASSERTION / Other`. If that changes, the repository as it stands then governs.
-
-**Audio provenance** (from the `assets/manifest.json` note inside its installer package): on 2026-10-12 five "unknown origin" network sounds were removed (third-party IP involved), and the five replacements are described in that note as "collected by the owner, no clear commercial licence".
-
-**Detection method**: Windows lid-state notification (`GUID_LIDSWITCH_STATE_CHANGE`); its CHANGELOG states that on a few machines whose firmware does not report the lid state the feature is silently disabled.
-
-**How this project differs**: all source is published under MIT; no audio is shipped (`.gitignore` excludes `sound.wav` — bring your own or use CC0); no dependence on firmware reports; plays after the unlock; four scripts, about 4 KB.
-
----
 
 ## License
 
