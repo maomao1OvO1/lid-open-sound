@@ -133,22 +133,78 @@
 
 ---
 
-## 同类工具：LidSound（事实记录，核查日期 2026-11-22）
+## 对照记录：LidSound（核查日期 2026-11-22）
 
-同类中另有一个工具 **[LidSound](https://github.com/Jax-DevinLabs/LidSound)**（仓库 [`Jax-DevinLabs/LidSound`](https://github.com/Jax-DevinLabs/LidSound)，.NET，Windows 开盖音效）。下表只列可验证的事实并注明出处，**不评价其设计或动机**；若对方后续调整，以它最新的仓库与许可证为准。
+同类中另有一个工具 **[LidSound](https://github.com/Jax-DevinLabs/LidSound)**（仓库 [`Jax-DevinLabs/LidSound`](https://github.com/Jax-DevinLabs/LidSound)，.NET，Windows 开盖音效）。
+
+下面每一项都来自**公开的仓库、公开的文档，或它自己发布的安装包**，并标注出处与核查时间；**不评价其设计或动机**。若对方后续调整，以其最新仓库与许可证为准。
+
+### 一、仓库层面
+
+| 项目 | 内容 | 出处 |
+|---|---|---|
+| 创建 / 最后推送 | 2026-10-09 11:04 / 2026-10-14 03:48（UTC） | GitHub API `/repos/...`，2026-11-22 核查 |
+| 文件总数 | **8 个**：`README.md`、`CHANGELOG.md`、`LICENSE`、`docs/用户手册.md`、`docs/隐私说明.md`、`.gitignore`、两个 issue 模板 | `git/trees/HEAD?recursive=1`，2026-11-22 |
+| **源码文件** | **0 个**（`.cs` / `.csproj` / `.sln` / `.xaml` 均无；按扩展名查提交历史也均为 0） | 上述文件树 + `commits?path=…`，2026-11-22 |
+| 仓库语言识别 | 空（无代码可识别） | GitHub API `/repos/...` |
+| 提交数 | **19 个**，全部落在 5 天内（2026-10-09 → 10-14） | `commits?per_page=100` |
+| 提交作者 | `Jax-DevinLabs` 2 个、`WorkBuddy-Test` 17 个 | 同上 |
+| Star / Fork / Issues | 1 / 0 / 0 | GitHub API，2026-11-22 |
+
+### 二、许可证层面
+
+| 时间 | 文件（提交） | 内容 | 出处 |
+|---|---|---|---|
+| 2026-10-09 11:14 | `LICENSE`（`2cfc1460`） | **标准 MIT 原文**，1,069 字节 | `contents/LICENSE?ref=2cfc1460` |
+| 2026-10-11 01:32 | `LICENSE`（`77b8380e`） | **专有 EULA**，3,106 字节，正文写明"生效日期：2026-10-11" | `contents/LICENSE?ref=77b8380e` |
+| 2026-10-09 → 10-14 | `README.md` 的徽章 | 始终是 `license-MIT-green`（首版与最后一版逐字相同） | 首版 `2cfc1460` / 末版 `b3194114` 的 README 原文 |
+| 2026-11-22 | GitHub 许可识别 | `NOASSERTION / Other` | GitHub API `/repos/...` 的 `license` 字段 |
+
+> 也就是说：MIT 许可证存在过**约两天**（2026-10-09 11:14 至 2026-10-11 01:32），此后为专有 EULA，而 README 徽章没有同步更新。**两个时期的仓库都没有源代码**，所以 MIT 期间可授权的对象也只是文档本身。
+
+### 三、发布物层面
+
+| 项目 | 内容 | 出处 |
+|---|---|---|
+| Release | 只有 `v0.3.0`（2026-10-12 00:43）：`LidSound-Setup.exe` 72,579,782 B、`LidSound-Portable.zip` 69,684,837 B、`…-0.3.0-full.nupkg` 69,692,614 B、两个 JSON 清单 | `releases?per_page=10`，2026-11-22 |
+| 应用清单 | `assets/manifest.json`：5 段内置音效 `ding-money` 2150ms / `bye-bye` 2000ms / `cat-meow` 1880ms / `boxing-bell` 3000ms / `zhu-kou` 1187ms，合计约 1.8 MB | 官方发布包内的 `assets/manifest.json` |
+| 该清单的备注字段 | 原文含："移除 5 个来源不明的网络音效（konan/蜘蛛侠/best-anime-ever/bye-bye-soundbible/mario-jump…）"；并写明替换后的 5 款为"个人收集，无明确商用授权" | 同上（`_readme` 字段） |
+| 依赖清单 | `LidSound.deps.json` 列 20 个包：`NAudio` 7 件套（2.2.1）、`Velopack` 1.2.161、`System.Management` 8.0.0、`Microsoft.Win32.Registry` 4.7.0 等；运行时 .NET 8.0.31 自包含 | 官方发布包内的 `LidSound.deps.json` |
+| 业务程序集 | `LidSound` / `LidSound.Core` / `LidSound.Bootstrap`（0.3.0） | 同上 |
+
+### 四、文档自述（其 CHANGELOG 原文，逐条可查）
+
+| 版本 | 自述内容 |
+|---|---|
+| 0.1.0（10-09） | "三段内置音效…全部由程序合成，不含商业音乐或第三方素材，零授权风险" |
+| 0.2.7（10-10） | 内置音效换为 `konan-hiramekiyin`（默认）、蜘蛛侠、best-anime-ever、bye-bye-soundbible、马里奥跳跃 |
+| 0.3.0（10-12） | "内置音效版权合规整改：移除 5 个来源不明的网络音效…" |
+| 0.1.1（10-09） | "自动更新指向正确的公开仓库。初版指向一个不对外开放的仓库…" |
+| 0.2.9（10-11） | "许可协议变更：自本版本起采用专有许可协议（EULA）" |
+
+### 五、收费与行为（其 README 自述）
+
+| 项目 | 内容 |
+|---|---|
+| 免费部分 | 程序本体 + 5 段内置音效 |
+| 付费部分 | 换成自己的音频需 **US$19.90 一次性买断**，授权按机器绑定（一机一码） |
+| 检测方式 | 基于 Windows 的盖子状态通知；其 CHANGELOG 写明"极少数机型固件不上报开盖状态，功能会静默禁用" |
+| 内存占用 | 其 README 自述约 260 MB（含打包 .NET 运行时） |
+
+### 六、与本仓库的对照
 
 | 项目 | LidSound | 本仓库 |
 |---|---|---|
-| 收费方式 | 本体与 5 段内置音效免费；**换成自己的音频需 US$19.90 一次性买断**，按机器绑定（一机一码）〔来源：其 README〕 | 免费，MIT |
-| 仓库内容<br>（2026-11-22 核查） | 共 **8 个文件**，全部为文档与配置；**源码文件（`.cs`/`.csproj`/`.sln`）= 0**；对外交付物为 Releases 里的 `LidSound-Setup.exe` / `LidSound-Portable.zip`〔来源：其仓库文件树 `git/trees/HEAD?recursive=1`〕 | 12 个文本文件，源码全部公开 |
-| 许可证 | `LICENSE` 自 **2026-10-11** 起为专有 EULA（禁止再分发、倒卖、逆向工程）；其 README 内的徽章标注为 MIT；GitHub API 识别结果为 `NOASSERTION / Other`〔来源：其 LICENSE 全文与 GitHub API〕 | MIT（LICENSE 与 README 一致） |
-| 内置音效 | 5 段；其安装包内 `assets/manifest.json` 的备注字段写明：替换后的 5 款音效为"个人收集，无明确商用授权"〔来源：其安装包的 manifest 字段〕 | 不附带任何音频（`.gitignore` 排除 `sound.wav`） |
-| 检测方式 | 基于 Windows 的盖子状态通知；其 CHANGELOG 写明"极少数机型固件不上报开盖状态，功能会静默禁用"〔来源：其 CHANGELOG〕 | 墙钟间隙检测，不依赖固件 |
-| 播放时机 | 开盖即播 | 解锁进桌面时播放 |
-| 体积 | 安装包约 30 MB，单文件 exe 约 69 MB | 脚本合计约 4 KB |
-| 内存占用 | 其 README 自述约 260 MB | 实测约 60 MB |
+| 源码 | 0 个文件 | 12 个文本文件，全部公开 |
+| 许可证 | 10-09 至 10-11 为 MIT，之后专有 EULA（徽章未更新） | MIT，LICENSE 与 README 一致 |
+| 音效 | 5 段内置，其清单备注称"无明确商用授权" | 不附带任何音频 |
+| 检测 | 依赖固件上报盖子状态 | 墙钟间隙，不依赖固件 |
+| 播放时机 | 开盖即播 | 解锁进桌面时播 |
+| 体积 | 安装包约 30 MB（单文件 exe 约 69 MB） | 脚本合计约 4 KB |
+| 内存 | 其自述约 260 MB | 实测约 60 MB |
+| 收费 | US$19.90 一次性 + 机器绑定 | 免费 |
 
-> 以上信息核查于 **2026-11-22**，均取自其公开仓库、公开文档与公开发布的安装包。本仓库不因此获得任何收益，也不对对方作出法律判断——只记录公开可查的事实，供使用者自行参考。
+> 以上全部核查于 **2026-11-22**，来源为其公开仓库、公开文档与其自行发布的安装包。本仓库不因此获得任何收益，也不对其作出法律判断——只记录公开可查的事实，供读者自行核对。
 
 # 🔧 第二部分 · 给想折腾的人
 
