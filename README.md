@@ -1,5 +1,7 @@
 # lid-open-sound
 
+中文 | [English](README.en.md)
+
 Windows 笔记本「合盖睡眠 → 开盖唤醒 → 输密码 → **进桌面那一刻**」播放一声自定义音效。
 
 ![platform](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011-lightgrey)
