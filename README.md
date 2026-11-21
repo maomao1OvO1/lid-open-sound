@@ -4,6 +4,8 @@
 
 合盖睡眠 → 开盖唤醒 → 输密码 → **进桌面那一刻**，播放一声你自己选好的音效。
 
+**不打包、不混淆、没有隐藏实现：源码、构建步骤与日志全部可查。**
+
 ![platform](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011-lightgrey)
 ![powershell](https://img.shields.io/badge/PowerShell-5.1%2B-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
