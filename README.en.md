@@ -2,6 +2,10 @@
 
 Plays a custom sound **the moment you reach the desktop** after opening your laptop lid.
 
+**MIT licensed — all source code lives in this repository.** Read it, audit it, modify it, fork it.
+
+Keywords: windows lid sound, laptop lid open sound, lid open chime, play sound on resume, open laptop sound, Windows 10 / 11 lid chime, open source alternative.
+
 ![platform](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011-lightgrey)
 ![powershell](https://img.shields.io/badge/PowerShell-5.1%2B-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
