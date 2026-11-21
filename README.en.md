@@ -1,203 +1,338 @@
 # lid-open-sound
 
-Plays a custom sound **the moment you reach the desktop** after opening your laptop lid.
+English | [中文](README.md)
 
-**MIT licensed — all source code lives in this repository.** Read it, audit it, modify it, fork it.
-
-Keywords: windows lid sound, laptop lid open sound, lid open chime, play sound on resume, open laptop sound, Windows 10 / 11 lid chime, open source alternative.
+Close the lid → open it → type your password → **the moment the desktop appears**, play a sound you chose.
 
 ![platform](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011-lightgrey)
 ![powershell](https://img.shields.io/badge/PowerShell-5.1%2B-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
 
-[中文](README.md) | English
+**MIT licensed — all source code lives in this repository.** Read it, audit it, modify it, fork it.
+
+Keywords: windows lid sound, laptop lid open sound, lid open chime, play sound on resume, open laptop sound, Windows 10 / 11 lid chime, open source alternative.
+
+> **30-second version**: download → double-click `install.py` → drag your audio file into the window → press Enter. Done.
 
 ---
 
-## Why this exists
+# 📦 Part 1 · For people who just want it to work
 
-A similar tool exists: [LidSound](https://github.com/Jax-DevinLabs/LidSound) — a .NET Windows lid sound app. It ships five built-in sounds for free; **changing the sound to your own costs US$19.90, one-time, bound to one machine** (`license.dat`, one license per device — price and licensing as stated in its README).
+## What it is
 
-It does not need drivers, admin rights or an installer — one PowerShell script plus a wav is enough. But there are a few pitfalls to understand first; this repo documents them along with the final design.
+A tiny Windows utility: **when you close your laptop, open it again and unlock, it plays one sound of your choice as the desktop appears.**
 
-Facts about that repository, as of 2026-11:
+- no driver
+- no admin rights
+- no account
+- no network, no telemetry
 
-1. **No source code is published.** The repo contains 8 files — `README.md`, `CHANGELOG.md`, `LICENSE`, two files under `docs/`, `.gitignore`, and two issue templates — and **zero source files** (`.cs` / `.csproj` / `.sln` count: 0). Binaries are distributed through Releases (`LidSound-Setup.exe`, `LidSound-Portable.zip`).
-2. **Its LICENSE has been a proprietary EULA since 2026-10-11** (versions published under MIT before that date keep their MIT terms). That EULA prohibits redistribution, resale and reverse engineering. Its README still embeds an MIT license badge, while the GitHub API reports `NOASSERTION / Other`.
-3. **It plays on lid open**, driven by Windows power events; it does not wait for the unlock.
+## What you need
 
-Source: its repository file tree (`git/trees/HEAD?recursive=1`), the `LICENSE` text and its commit history; if anything changes, the repository as it stands then governs.
-
-This repo differs in one concrete way: the full source is here, MIT, readable and modifiable. Changing the sound is free, and it plays when the desktop appears.
-
-## What it does
-
-| Situation | Behaviour |
+| Need | Notes |
 |---|---|
-| Close lid → open lid → type password → desktop appears | one sound, right as the desktop shows |
-| Close lid → open lid (no password set) | one sound, 8 s after resume |
-| Lid open, never unlocked | no sound (gives up after 5 minutes) |
-| User logon | starts automatically, hidden window, no console flash |
+| A Windows 10 / 11 laptop | Desktops do not apply (there is no "lid") |
+| One audio file | `.wav` is easiest; `mp3 / m4a / ogg` need `ffmpeg` installed to be converted |
+| Python 3.8+ (optional) | Only for "Option A"; use "Option B" if you do not have Python |
 
-Features:
+## Install (pick one)
 
-- Pure PowerShell + VBS: **no admin rights, no driver, no installer**
-- Single-instance mutex — never double-plays
-- `events.log` records every wake / play attempt with timings
-- **Watchdog**: a scheduled task checks every minute and restarts the watcher if it was killed (`watchdog.log`); it is launched through `wscript` + a hidden VBS, so no console window ever flashes
-- Change the sound by replacing `sound.wav` — no code edits
+### Option A: the installer (easiest, recommended)
 
-## How it works (the three pitfalls are the interesting part)
-
-### Pitfall 1: Windows power events never arrive in a hidden process
-
-The obvious approach is `SystemEvents.PowerModeChanged`. Measured on a hidden PowerShell process, it does not work at all:
-
-| Approach | Result |
-|---|---|
-| `Register-ObjectEvent SystemEvents.PowerModeChanged` | only the startup log line, no Suspend/Resume |
-| Hidden Form + `[Windows.Forms.Application]::Run($form)` to pump messages | still nothing |
-| `Register-WmiEvent Win32_PowerManagementEvent -Action` | still nothing (the `-Action` block is never scheduled while the script sits in `while { Start-Sleep }`) |
-
-Don't waste time on power events. Use a different signal.
-
-### Pitfall 2: the audio codec is dead for several seconds after resume
-
-The HDA codec is powered down during sleep and needs to be reinitialised. In practice, playing 4 s and 7 s after resume produced **no audible sound**, while the same file played manually works fine. A `PlaySync()` call returning after ~1.2 s does **not** mean the sound reached the speakers.
-
-### Pitfall 3: the process is frozen → use a wall-clock gap
-
-While the machine is in S3, the process is frozen but the wall clock keeps running:
-
-```powershell
-Start-Sleep -Milliseconds 500
-$gap = ([DateTime]::UtcNow - $lastCheck).TotalSeconds
-if ($gap -ge 2.2) { <just resumed> }
-```
-
-A normal iteration takes 0.5 s. A sudden gap of 2.2 s or more can only mean the process was frozen — the most reliable "just woke up" signal there is, no system events required.
-
-### Final timing: wait for the lock screen to disappear
-
-`LogonUI.exe` runs while the machine is locked and exits the moment you unlock:
+1. Download this repository (`Code` → `Download ZIP`, unzip anywhere)
+2. Double-click **`install.py`**
+3. **Drag your audio file into the black window** and press Enter
+4. You should see:
 
 ```
-resume detected
-  └─ poll LogonUI every 500 ms
-       ├─ lock screen seen, then LogonUI gone → play once (the desktop moment)
-       ├─ no lock screen ever appeared        → play 8 s after resume
-       └─ nobody unlocked for 5 minutes       → give up
+✔ 音效已更新：my-sound.wav
+✔ 已设置开机自启（登录后隐藏运行）
+✔ 监听进程已启动
+✔ 监听中（1 个实例）
 ```
 
-Before playing it also waits for `Audiosrv`, and uses the `PlaySync()` duration as a sanity check (under 500 ms = audio endpoint not ready, retry up to 3 times).
+> Cannot double-click? Right-click → *Run with Python*, or in a terminal: `python install.py`.
+> No Python? Use Option B below.
 
-## Install
+### Option B: the PowerShell script
 
-1. Download or clone this repo to any folder, e.g. `D:\tools\lid-open-sound`
-2. Put a `sound.wav` next to the scripts. **No audio is shipped in this repo** (`.gitignore` excludes `sound.wav`): record your own, or use a CC0 / public-domain sound (e.g. CC0 samples on freesound.org)
-3. Right-click `install.ps1` → *Run with PowerShell* (no admin needed)
+1. Rename your audio file to `sound.wav` and put it next to the scripts
+2. Right-click **`install.ps1`** → *Run with PowerShell*
+3. Wait for "Done." — that is it
 
-### Option 2 (easier): Python one-click installer
+## Changing the sound
 
-If you would rather not touch PowerShell, run `install.py` (needs Python 3.8+):
+**Run `install.py` again** and give it the new file.
 
-```bash
-python install.py
-```
+- The old sound is backed up as `sound.wav.bak`
+- No reboot, no reinstall
 
-Drag your audio file into the window and press Enter. It copies the sound, sets up autostart and starts the watcher.
-**Run it again to change the sound** — the old one is backed up as `sound.wav.bak`.
+## Does it start automatically?
 
-- `.wav` is supported directly; `mp3/m4a/ogg` need `ffmpeg` on the machine to be converted
-- You can also pass the path directly: `python install.py "D:\music\ding.wav"`
+Yes. After installation it starts on every logon, hidden — you will never see a console window.
 
-`install.ps1` will:
+If something kills it (an "optimizer", a virus scanner, a mistake), a watchdog checks once a minute and restarts it.
 
-- add a per-user autostart entry `LidOpenSound` under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`
-- register the watchdog task `LidOpenSound-Watchdog` (every minute, restarts a killed watcher)
-- start the watcher immediately
-- print the current state and the log path
+## How to test it
 
-> Only HKCU is touched. Nothing system-wide, uninstalls cleanly.
+1. Close the lid (let the machine sleep)
+2. Wait about 5 seconds
+3. Open the lid and type your password
+4. **The moment the desktop shows up**, you should hear the sound
+
+## No sound? Check in this order
+
+1. **Read the log**: open `events.log` and look at the last lines
+   - `WAKE detected` present → detection works, the problem is audio
+   - no `WAKE detected` at all → the watcher is not running
+2. **Check volume / mute** in the tray
+3. **Reinstall**: run `install.py` again (it restarts the watcher)
 
 ## Uninstall
 
-Run `uninstall.ps1`: removes the autostart entry and stops the watcher.
+Right-click **`uninstall.ps1`** → *Run with PowerShell*. It removes the autostart entry, the watchdog task and stops the watcher. Then delete the folder.
 
-## Test / troubleshoot
+## FAQ (plain English)
 
-- `test-play.ps1` — plays `sound.wav` once, so you can verify volume, output device and the file itself
-- `events.log` — startup, wake detection, audio readiness and play durations
-- `watchdog.log` — written only when the watchdog actually had to restart the watcher
-  - `PLAY` present but silent → audio device / volume issue
-  - no `WAKE detected` at all → the watcher is not running
-- Sensitivity: change `2.2` (seconds) in the script. 2–3 s suits most laptops; lower values may be triggered by system hiccups
+**Q: Do I need admin rights?**
+
+No. Everything runs per-user; nothing system-wide is touched.
+
+**Q: Does it collect my data?**
+
+No. It reads the `.wav` you give it and plays it. No network requests, no telemetry, no account.
+
+**Q: Why does it play when the desktop appears instead of when the lid opens?**
+
+The audio codec needs several seconds to come back after resume. Playing right after wake is silently dropped — we measured playbacks at +4 s and +7 s being completely inaudible. Waiting for the unlock means the codec is ready.
+
+**Q: Does it work on a desktop, or on a PC that only locks the screen?**
+
+No. It detects "resume from sleep"; a desktop has no lid, and a screen lock without sleep produces no wall-clock gap.
+
+**Q: How do I know it is running?**
+
+Task Manager shows a `powershell.exe` whose command line contains `lid-open-sound.ps1`. It is quiet: about 60 MB RAM and almost no CPU.
+
+**Q: Is it safe?**
+
+Everything is plain text: four scripts, about 4 KB in total, no binaries, no compiler. Anyone can read every line.
+
+**Q: Can I use it on several laptops?**
+
+Yes — install it on each one. It is free and there is nothing to activate.
+
+---
+
+# 🔧 Part 2 · For people who like to tinker
+
+## How it works in one paragraph
+
+**While the machine sleeps, the process is frozen but the wall clock keeps running** — so a sudden jump in the loop interval means "we just resumed". Then it waits for `LogonUI.exe` to disappear (the unlock), because the audio codec needs several seconds to come back. Before playing it checks that the stream was really delivered, using the duration of `PlaySync()`.
+
+## Why Windows power events don't work (three measured results)
+
+The obvious approach is `SystemEvents.PowerModeChanged`. In a hidden PowerShell process it never arrives:
+
+| Approach | Measured result |
+|---|---|
+| `Register-ObjectEvent SystemEvents.PowerModeChanged` | only the startup line, no Suspend/Resume |
+| Hidden Form + `[System.Windows.Forms.Application]::Run($form)` to pump messages | still nothing |
+| `Register-WmiEvent Win32_PowerManagementEvent -Action` | still nothing (the `-Action` block is never scheduled while the script sits in `while { Start-Sleep }`) |
+
+It is not a configuration problem: a hidden process has no message pump, and a blocking loop starves the scheduled script block.
+
+## The actual detection: wall-clock gap
+
+```powershell
+$lastCheck = [DateTime]::UtcNow
+while ($true) {
+    Start-Sleep -Milliseconds 700
+    $now = [DateTime]::UtcNow
+    $gap = ($now - $lastCheck).TotalSeconds
+    $lastCheck = $now
+
+    if ($gap -ge 2.2) {
+        # the process was frozen -> we just resumed from sleep
+    }
+}
+```
+
+A normal iteration takes 0.7 s. A gap of 2.2 s or more can only mean the process was frozen. No system events, no firmware reports, no per-machine quirks.
+
+> Why not read the ACPI lid state? Because many firmwares never report lid events — the comparable tool's own FAQ admits "a few machines' firmware does not report the lid state and the feature is silently disabled". The wall-clock approach sidesteps that: if the machine can sleep and resume, it works.
+
+## Why it waits for the unlock
+
+`LogonUI.exe` runs while the machine is locked and exits on unlock:
+
+```
+resume detected (gap >= 2.2 s)
+  └─ poll LogonUI.exe every 500 ms
+       ├─ lock screen seen, then LogonUI gone -> play (the desktop moment)
+       ├─ no lock screen ever appeared        -> play 8 s after resume
+       └─ nobody unlocked for 5 minutes       -> give up
+```
+
+The reason is the **audio codec**: right after resume, playbacks at +4 s and +7 s were inaudible, while the same file played manually worked fine. `PlaySync()` returning after 1.2 s does **not** mean the sound reached the speakers.
+
+## Playback reliability: PlaySync duration check
+
+```powershell
+$sw = [Diagnostics.Stopwatch]::StartNew()
+$player.PlaySync()
+$sw.Stop()
+if ($sw.ElapsedMilliseconds -ge 500) { ok } else { endpoint not ready -> retry }
+```
+
+`PlaySync` blocks until the whole file has been handed to the endpoint, so its duration should roughly match the file length (a 1.13 s file takes 1.2–1.4 s). A much shorter return means the endpoint accepted nothing — retry, up to 3 times.
+
+## Single instance: named mutex
+
+```powershell
+$mutex = New-Object System.Threading.Mutex($false, 'LidOpenSoundSingleInstance')
+if (-not $mutex.WaitOne(0)) { exit 0 }   # another copy is already running
+```
+
+> The mutex is **global** (cross-process). When upgrading from one folder to another, the old process still holds it and the new instance exits immediately — so any installer cleanup must match **both** the old script name `lidsound.ps1` and the new one `lid-open-sound.ps1`.
+
+## Self-healing: the watchdog
+
+The watcher can be killed by an optimizer, a scanner, or a mistake (we hit this: the process vanished after 17:50 with no crash record in the Application log). Hence:
+
+- `watchdog.ps1` — checks for a powershell process running `lid-open-sound.ps1`; if none, starts `run_hidden.vbs`
+- `watchdog_hidden.vbs` — starts it with `WScript.Shell.Run(..., 0, False)`, so **no window is ever shown**
+- scheduled task `LidOpenSound-Watchdog` — runs every minute
+
+> Why not point the task directly at `powershell.exe`? Because `-WindowStyle Hidden` applies *after* the process starts, so a console flashes for a moment. Wrapping it in a VBS with window style 0 is the only silent way.
+
+## Files
+
+| File | Purpose | Size |
+|---|---|---|
+| `lid-open-sound.ps1` | main watcher: gap detection + LogonUI + playback retries + mutex | 4.7 KB |
+| `run_hidden.vbs` | starts the watcher hidden (used by autostart) | 0.4 KB |
+| `install.ps1` | writes HKCU autostart, registers the watchdog task, starts it | 2.9 KB |
+| `install.py` | friendly interactive installer / sound changer | 7.6 KB |
+| `uninstall.ps1` | removes autostart + task, stops the watcher | 1.2 KB |
+| `watchdog.ps1` | restarts the watcher if it is gone | 1.0 KB |
+| `watchdog_hidden.vbs` | runs the watchdog silently | 0.5 KB |
+| `test-play.ps1` | manual playback test + audio service status | 0.8 KB |
+
+Runtime files: `events.log` (start / wake / play / errors) and `watchdog.log` (written only when a restart actually happened).
+
+## Key constants
+
+| Constant | Value | Meaning |
+|---|---|---|
+| loop interval | 700 ms | detection resolution |
+| wake threshold | **2.2 s** | a bigger gap means "was frozen" |
+| lock poll | 500 ms | how often `LogonUI.exe` is checked |
+| no-lock fallback | 8 s | delayed play when no lock screen appears |
+| give up | 300 s | stop waiting for an unlock after 5 minutes |
+| playback check | 500 ms | shorter `PlaySync` = not really played |
+| retries | 3, 1.5 s apart | when the endpoint is not ready |
+| watchdog interval | 1 minute | smallest granularity of schtasks |
+
+Tuning notes: do not go below about 1.5 s for the wake threshold (an old machine occasionally stutters); if you want "play on lid open", drop the LogonUI logic, but you will meet the unready-codec problem again.
+
+## Performance measured (T420 / i5-2520M / Windows 10 19045)
+
+| Metric | Measured |
+|---|---|
+| working set | 60.2 MB |
+| private bytes | 57.5 MB |
+| CPU over 50 minutes | 3.75 s |
+| log growth | ~4 KB per run |
+| watcher size | 4.7 KB (no bundled runtime) |
+
+## Log format
+
+```
+[2026-11-21 16:13:10.874] WAKE detected, gap=9.30s
+[2026-11-21 16:13:23.518] audio ready=True, playing once (unlocked after wake, 12.6s after wake)
+[2026-11-21 16:13:24.788] PLAY open.wav (unlocked after wake) attempt 1 took 1262ms
+```
+
+| Line | Meaning |
+|---|---|
+| `WAKE detected, gap=Xs` | resume detected, X = frozen duration |
+| `audio ready=…` | whether the audio service answered |
+| `playing once (…)` | playback triggered, reason in parentheses |
+| `PLAY … took Xms` | actual playback duration (≈ file length when it works) |
+| `another instance already running` | mutex rejected a duplicate |
+| `ERROR play attempt N: …` | playback exception and retry count |
 
 ## Known limitations
 
-- Only reacts to **sleep/hibernate resume**; a "do nothing on lid close" power policy never triggers it
+- Only reacts to **sleep / hibernation resume**; a "do nothing on lid close" power policy never triggers it
 - Uses `LogonUI.exe` to detect the lock screen (works on Windows 10/11); machines without a password use the 8 s fallback
-- On machines with a slow audio codec the first playback may be delayed a few seconds
-- If the watcher is killed (some "optimizer" tools do this), it comes back on next logon
+- On machines with a very slow audio codec the first playback may be delayed a few seconds
+- Must run in a **user session** (it cannot be a service — services have no desktop audio session)
+- After being killed, the watcher may take up to a minute to come back
 
-## Compatibility
+## Technical FAQ
 
-- Windows 10 / 11, Windows PowerShell 5.1 (built in — PowerShell 7 not required)
-- Must run in a **user session** (not as a service — services cannot play audio to the desktop)
+**Q: Why not read the ACPI lid state?**
 
-## FAQ
+Possible, but many firmwares never report it. `GUID_LIDSWITCH_STATE_CHANGE`-style notifications are missed on some laptops and the feature fails silently. The wall-clock approach needs only sleep/resume.
 
-**Q: Which laptops are supported?**
+**Q: Why PowerShell instead of C# or Python?**
 
-A: Any laptop that actually sleeps on lid close (S3 or modern standby). This tool does not read ACPI lid state and does not depend on firmware lid events: it detects "the process was frozen and resumed", so it is machine- and firmware-independent. The only case that never triggers is a power policy where closing the lid does nothing — the machine never sleeps, so there is nothing to resume from.
+Zero dependencies. Windows already has PowerShell 5.1 and .NET's `System.Media.SoundPlayer`. C# would mean bundling .NET (tens of MB); Python would mean asking the user to install an interpreter.
 
-**Q: Why play when the desktop appears instead of the moment the lid opens?**
+**Q: Why not NAudio?**
 
-A: Audio hardware. Measured right after resume, playbacks at +4 s and +7 s were inaudible (the same file plays fine manually): the HDA codec needs several seconds to come back. Playing once the lock screen is gone is both reliable and audible — this is by design, not lag.
+NAudio is great but heavy for "play one wav" — it pulls seven packages (NAudio/Core/WinMM/Wasapi/Asio/Midi/WinForms). `SoundPlayer` is built in and enough.
 
-**Q: How much memory does it use?**
+**Q: Can it also play when the lid closes?**
 
-A: One resident PowerShell process (Windows 5.1, runtime not bundled). Measured on this machine: about **60 MB** working set, about 58 MB private; roughly 4 s of CPU over 50 minutes. The log only grows on start/wake/play (~4 KB per run).
+In theory you can race the sleep transition, but you only have one or two seconds and the system often mutes audio. This project only does lid-open.
 
-**Q: Does it need admin rights or touch system settings?**
+**Q: Can it play before logon (boot sound)?**
 
-A: Neither. It writes one per-user autostart value under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`. No HKLM, no driver, no service, no power-policy changes.
+No. Third-party processes cannot play audio on the logon screen — there is no user audio session yet.
 
-**Q: Can it play twice, or race with a second copy?**
+**Q: Why is `PlaySync` duration normal but still silent?**
 
-A: No. A named mutex (`LidOpenSoundSingleInstance`) keeps it single-instance; each wake plays once; the play call is blocking and the timing baseline is reset afterwards, so the block is not mistaken for a second wake.
+The HDA codec re-initialises after resume; during that window a playback call may "succeed" without reaching the speakers. That is why we wait for the unlock, delay, and verify the duration.
 
-**Q: Does it send any data?**
+**Q: Can I detect the unlock without `LogonUI.exe`?**
 
-A: No. It reads a local `sound.wav` and plays it: no network, no telemetry, no account.
+Yes — `WTSQuerySessionInformation` or a `SessionSwitch` subscription both work. `LogonUI.exe` presence is the simplest and most version-stable check.
 
-**Q: Why not use the Windows power events?**
+**Q: Can I play a random sound from several files?**
 
-A: Because hidden processes never receive them. All three approaches tested (`SystemEvents.PowerModeChanged`, adding a hidden Form to pump messages, `Register-WmiEvent Win32_PowerManagementEvent`) failed — see "Pitfall 1".
+Sure — pick randomly inside the play function. The current design deliberately uses one sound for predictability.
 
-**Q: How does it compare to similar tools?**
+**Q: Will antivirus flag it?**
 
-A: Facts only: LidSound's app and its five built-in sounds are free, but **changing the sound to your own costs US$19.90, one-time and machine-bound**; its repo contains 8 files with no source code, and its `LICENSE` has been a proprietary EULA since 2026-10-11 (no redistribution, resale or reverse engineering) while the README still shows an MIT badge. This project publishes all of its source under MIT and changing the sound is free. Its own FAQ states that a few machines whose firmware does not report the lid state fall back to playing on resume; this project does not depend on firmware reports.
+It is plain `.ps1` / `.vbs` text with no compiled artifact, so false positives are unlikely. Packed exe versions of similar tools are flagged far more often.
 
-**Q: How do I uninstall?**
+**Q: Does it work on Windows Server?**
 
-A: Run `uninstall.ps1` (removes the autostart entry and stops the watcher), then delete the folder. No registry leftovers.
+Technically yes (user session + `LogonUI`), but there is no lid, so it is pointless.
 
-**Q: Does it work on desktops, or on machines that only lock the screen?**
+## Factual comparison with a similar tool
 
-A: No. It detects resume from sleep; a desktop has no lid, and a screen lock without sleep produces no wall-clock jump.
+A comparable tool exists: **LidSound** (`Jax-DevinLabs/LidSound`, .NET, Windows lid sound). Everything below is verifiable, with its source and date:
 
-## Cheat sheet
+**Pricing**: the app and its five built-in sounds are free; **changing the sound to your own costs US$19.90, one-time, machine-bound** (`license.dat`, one license per device) — price and licensing as stated in its README.
 
-| Need | How | Why |
-|---|---|---|
-| Know "we just woke up" | wall-clock gap ≥ 2.2 s | power events don't arrive in hidden processes |
-| Wait for audio | `Wait-AudioReady` + `PlaySync` duration check | first streams after resume get swallowed |
-| Know "desktop is up" | `LogonUI.exe` disappeared | it lives until unlock |
-| Never double-play | named Mutex + reset baseline after blocking play | multi-instance / blocking both cause repeats |
+**Repository contents** (as of 2026-11, from `git/trees/HEAD?recursive=1`): 8 files, all documentation/config (`README.md`, `CHANGELOG.md`, `LICENSE`, `docs/用户手册.md`, `docs/隐私说明.md`, `.gitignore`, two issue templates) and **zero source files** (`.cs` / `.csproj` / `.sln` count: 0). Binaries ship through Releases (`LidSound-Setup.exe`, `LidSound-Portable.zip`).
+
+**License**: its `LICENSE` has been a proprietary EULA since **2026-10-11** (no redistribution, resale or reverse engineering), while its README still embeds an MIT badge; the GitHub API reports `NOASSERTION / Other`. If that changes, the repository as it stands then governs.
+
+**Audio provenance** (from the `assets/manifest.json` note inside its installer package): on 2026-10-12 five "unknown origin" network sounds were removed (third-party IP involved), and the five replacements are described in that note as "collected by the owner, no clear commercial licence".
+
+**Detection method**: Windows lid-state notification (`GUID_LIDSWITCH_STATE_CHANGE`); its CHANGELOG states that on a few machines whose firmware does not report the lid state the feature is silently disabled.
+
+**How this project differs**: all source is published under MIT; no audio is shipped (`.gitignore` excludes `sound.wav` — bring your own or use CC0); no dependence on firmware reports; plays after the unlock; four scripts, about 4 KB.
+
+---
 
 ## License
 
-MIT © 2026 maomao1OvO1
+MIT License © 2026 maomao1OvO1
 
 This tool only plays a local wav file. No network, no telemetry.
