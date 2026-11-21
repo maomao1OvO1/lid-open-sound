@@ -91,7 +91,7 @@ Before playing it also waits for `Audiosrv`, and uses the `PlaySync()` duration 
 ## Install
 
 1. Download or clone this repo to any folder, e.g. `D:\tools\lid-open-sound`
-2. Put a `sound.wav` next to the scripts (any `.wav` works)
+2. Put a `sound.wav` next to the scripts. **No audio is shipped in this repo** (`.gitignore` excludes `sound.wav`): record your own, or use a CC0 / public-domain sound (e.g. CC0 samples on freesound.org)
 3. Right-click `install.ps1` → *Run with PowerShell* (no admin needed)
 
 `install.ps1` will:
