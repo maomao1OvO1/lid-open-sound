@@ -31,12 +31,12 @@ $Value = '"{0}" //B "{1}"' -f $Wscript, $Vbs
 New-ItemProperty -Path $RunKey -Name 'LidOpenSound' -Value $Value -PropertyType String -Force | Out-Null
 Write-Host ("autostart registered: LidOpenSound = {0}" -f $Value)
 
-# watchdog: re-create the scheduled task (every 3 minutes) so a killed watcher comes back
+# watchdog: re-create the scheduled task (every 1 minute) so a killed watcher comes back
 if (Test-Path -LiteralPath $Watchdog) {
     $tr = 'powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "{0}"' -f $Watchdog
-    $out = & schtasks.exe /Create /TN $TaskName /TR $tr /SC MINUTE /MO 3 /F 2>&1
+    $out = & schtasks.exe /Create /TN $TaskName /TR $tr /SC MINUTE /MO 1 /F 2>&1
     if ($LASTEXITCODE -eq 0) {
-        Write-Host ("watchdog task registered: {0} (every 3 minutes)" -f $TaskName)
+        Write-Host ("watchdog task registered: {0} (every 1 minute)" -f $TaskName)
     } else {
         Write-Host ("watchdog task could NOT be registered: {0}" -f ($out -join ' '))
         Write-Host '  (the watcher still works; it just will not auto-restart)'
