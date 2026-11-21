@@ -18,6 +18,8 @@ Keywords: windows lid sound, laptop lid open sound, lid open chime, play sound o
 
 A similar tool exists: [LidSound](https://github.com/Jax-DevinLabs/LidSound) — a .NET Windows lid sound app. It ships five built-in sounds for free; **changing the sound to your own costs US$19.90, one-time, bound to one machine** (`license.dat`, one license per device — price and licensing as stated in its README).
 
+It does not need drivers, admin rights or an installer — one PowerShell script plus a wav is enough. But there are a few pitfalls to understand first; this repo documents them along with the final design.
+
 Facts about that repository, as of 2026-11:
 
 1. **No source code is published.** The repo contains 8 files — `README.md`, `CHANGELOG.md`, `LICENSE`, two files under `docs/`, `.gitignore`, and two issue templates — and **zero source files** (`.cs` / `.csproj` / `.sln` count: 0). Binaries are distributed through Releases (`LidSound-Setup.exe`, `LidSound-Portable.zip`).
