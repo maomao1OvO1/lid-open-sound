@@ -44,7 +44,7 @@ Features:
 - Pure PowerShell + VBS: **no admin rights, no driver, no installer**
 - Single-instance mutex — never double-plays
 - `events.log` records every wake / play attempt with timings
-- **Watchdog**: a scheduled task checks every minute and restarts the watcher if it was killed (`watchdog.log`)
+- **Watchdog**: a scheduled task checks every minute and restarts the watcher if it was killed (`watchdog.log`); it is launched through `wscript` + a hidden VBS, so no console window ever flashes
 - Change the sound by replacing `sound.wav` — no code edits
 
 ## How it works (the three pitfalls are the interesting part)
