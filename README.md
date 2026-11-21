@@ -133,7 +133,7 @@
 
 ## 同类工具：LidSound（事实记录，核查日期 2026-11-22）
 
-同类中另有一个工具 **LidSound**（仓库 `Jax-DevinLabs/LidSound`，.NET，Windows 开盖音效）。下表只列可验证的事实并注明出处，**不评价其设计或动机**；若对方后续调整，以它最新的仓库与许可证为准。
+同类中另有一个工具 **[LidSound](https://github.com/Jax-DevinLabs/LidSound)**（仓库 [`Jax-DevinLabs/LidSound`](https://github.com/Jax-DevinLabs/LidSound)，.NET，Windows 开盖音效）。下表只列可验证的事实并注明出处，**不评价其设计或动机**；若对方后续调整，以它最新的仓库与许可证为准。
 
 | 项目 | LidSound | 本仓库 |
 |---|---|---|
