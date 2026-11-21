@@ -44,6 +44,7 @@ Windows 笔记本「合盖睡眠 → 开盖唤醒 → 输密码 → **进桌面�
 - 纯 PowerShell + VBS，**无需管理员权限、无驱动、无安装包**
 - 单实例互斥锁，不会重复响
 - 日志 `events.log` 记录每次唤醒/播放耗时，方便排错
+- **看门狗**：计划任务每 3 分钟检查一次，进程被杀会自动拉起（记录到 `watchdog.log`）
 - 换音效 = 替换 `sound.wav`，不用改代码
 
 ## 原理（这三个坑才是重点）
@@ -96,9 +97,10 @@ WAKE 检测到
 2. 准备一个音效文件，命名为 `sound.wav`，放到同一目录。**本仓库不附带任何音频**（`.gitignore` 已排除 `sound.wav`）：自己录制，或使用 CC0 / 无版权音效（如 freesound.org 上标注 CC0 的素材）
 3. 右键 `install.ps1` → 使用 PowerShell 运行（不需要管理员）
 
-`install.ps1` 会做三件事：
+`install.ps1` 会做四件事：
 
 - 在 `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` 写入 `LidOpenSound` 自启项（登录后隐藏启动）
+- 注册看门狗计划任务 `LidOpenSound-Watchdog`（每 3 分钟检查一次，进程没了自动拉起）
 - 立刻启动一次监听进程
 - 打印当前状态与日志位置
 
@@ -112,6 +114,7 @@ WAKE 检测到
 
 - `test-play.ps1`：手动播放一次 `sound.wav`，确认音量、设备、文件都正常
 - `events.log`：每次启动、检测到唤醒、音频服务就绪、播放耗时都会记录
+- `watchdog.log`：看门狗只在**真正拉起过一次**时写一行，用来判断进程是不是被杀过
   - 有 `PLAY` 但听不到 → 音频设备/音量问题
   - 连 `WAKE detected` 都没有 → 监听进程没在跑（`uninstall` 过 / 被杀）
 - 想调灵敏度：改脚本里的 `2.2`（秒）。笔记本一般 2～3 秒合适，太小会被系统卡顿误触发
