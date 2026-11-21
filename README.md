@@ -12,13 +12,15 @@ Windows 笔记本「合盖睡眠 → 开盖唤醒 → 输密码 → **进桌面�
 
 ## 为什么写这个
 
-有同类开源工具 [LidSound](https://github.com/Jax-DevinLabs/LidSound)（MIT、.NET、Windows 开盖音效）把「上传自己的音效」这一个开关做成了付费功能：内置 5 段音效免费，**换成自己的音频要 US$19.90 一次性买断**，授权还按机器绑定（一机一码）。本仓库免费、MIT，音效想换就换，而且能等到「解锁进桌面」那一刻才响。
+同类工具中有一个 [LidSound](https://github.com/Jax-DevinLabs/LidSound)（仓库挂 MIT 许可证，.NET，Windows 开盖音效）：内置 5 段音效免费，**换成自己的音频需 US$19.90 一次性买断**，授权按机器绑定（一机一码，以上价格与授权方式出自其 README）。本仓库免费、MIT，音效可自行替换，并在「解锁进桌面」那一刻播放。
 
 它其实不需要驱动、不需要管理员权限、不需要安装包，一个 PowerShell 脚本 + 一个 wav 就能做完——但有几个坑得先踩明白。这个仓库把踩过的坑和最终方案都写下来了，MIT 协议，随便用。
 
-> ⚠️ 顺带把这个「MIT 开源」拆穿一下：截至 2026-11，LidSound 的 GitHub 仓库里**一共 8 个文件，全是文档、许可证和 issue 模板，源码文件（`.cs` / `.csproj` / `.sln`）数量为 0**；真正交付的是 Releases 里编译好的 `LidSound-Setup.exe` / `LidSound-Portable.zip`。也就是说它属于「文档开源、二进制闭源」——想改代码只能反编译，而换音效那个开关还得买授权。
+> 一个需要说明的事实：截至 2026-11，它的 GitHub 仓库共 8 个文件（`README.md`、`CHANGELOG.md`、`LICENSE`、`docs/用户手册.md`、`docs/隐私说明.md`、`.gitignore`、两个 issue 模板），**没有源码文件**（`.cs` / `.csproj` / `.sln` 数量为 0）；对外发布的是 Releases 里的编译产物（`LidSound-Setup.exe`、`LidSound-Portable.zip`）。
 >
-> 本仓库反过来：源码全在这里，想改哪行改哪行，`fork` 随便。
+> 以上信息取自其仓库文件树（`git/trees/HEAD?recursive=1`）与 Releases 列表；若对方后续公开源码，以最新仓库为准。
+>
+> 本仓库的源码全部在仓库里，可直接阅读与修改。
 
 ## 它做什么
 
