@@ -128,22 +128,78 @@ Yes — install it on each one. It is free and there is nothing to activate.
 
 ---
 
-## Similar tool: LidSound (factual record, checked 2026-11-22)
+## Comparison record: LidSound (checked 2026-11-22)
 
-Another tool exists in the same space: **[LidSound](https://github.com/Jax-DevinLabs/LidSound)** (repo [`Jax-DevinLabs/LidSound`](https://github.com/Jax-DevinLabs/LidSound), .NET, Windows lid sound). The table below lists verifiable facts only, with sources, and **makes no judgement about its design or intent**. If it changes, its latest repository and licence govern.
+Another tool exists in the same space: **[LidSound](https://github.com/Jax-DevinLabs/LidSound)** (repo [`Jax-DevinLabs/LidSound`](https://github.com/Jax-DevinLabs/LidSound), .NET, Windows lid sound).
+
+Every item below comes from its **public repository, its public docs, or the installer package it publishes**, with source and check date noted. **No judgement is made about its design or intent.** If it changes, its latest repository and licence govern.
+
+### 1. Repository
+
+| Item | Content | Source |
+|---|---|---|
+| Created / last push | 2026-10-09 11:04 / 2026-10-14 03:48 (UTC) | GitHub API `/repos/...`, checked 2026-11-22 |
+| Total files | **8**: `README.md`, `CHANGELOG.md`, `LICENSE`, `docs/用户手册.md`, `docs/隐私说明.md`, `.gitignore`, two issue templates | `git/trees/HEAD?recursive=1`, 2026-11-22 |
+| **Source files** | **0** (no `.cs` / `.csproj` / `.sln` / `.xaml`; commit history per extension is also empty) | tree above + `commits?path=…`, 2026-11-22 |
+| Detected language | none (nothing to detect) | GitHub API `/repos/...` |
+| Commits | **19**, all within 5 days (2026-10-09 → 10-14) | `commits?per_page=100` |
+| Commit authors | `Jax-DevinLabs` ×2, `WorkBuddy-Test` ×17 | same |
+| Stars / forks / issues | 1 / 0 / 0 | GitHub API, 2026-11-22 |
+
+### 2. Licence
+
+| Date | File (commit) | Content | Source |
+|---|---|---|---|
+| 2026-10-09 11:14 | `LICENSE` (`2cfc1460`) | **standard MIT text**, 1,069 bytes | `contents/LICENSE?ref=2cfc1460` |
+| 2026-10-11 01:32 | `LICENSE` (`77b8380e`) | **proprietary EULA**, 3,106 bytes, effective 2026-10-11 | `contents/LICENSE?ref=77b8380e` |
+| 2026-10-09 → 10-14 | `README.md` badge | always `license-MIT-green` (identical in the first and the last version) | README at `2cfc1460` / `b3194114` |
+| 2026-11-22 | GitHub licence detection | `NOASSERTION / Other` | `license` field of `/repos/...` |
+
+> In other words: MIT existed for about **two days** (2026-10-09 11:14 → 2026-10-11 01:32), then it became a proprietary EULA and the README badge was not updated. **Neither period contained source code**, so what MIT licensed during those two days was documentation.
+
+### 3. Published artifacts
+
+| Item | Content | Source |
+|---|---|---|
+| Release | only `v0.3.0` (2026-10-12 00:43): `LidSound-Setup.exe` 72,579,782 B, `LidSound-Portable.zip` 69,684,837 B, `…-0.3.0-full.nupkg` 69,692,614 B, two JSON manifests | `releases?per_page=10`, 2026-11-22 |
+| App manifest | `assets/manifest.json`: five sounds `ding-money` 2150 ms / `bye-bye` 2000 ms / `cat-meow` 1880 ms / `boxing-bell` 3000 ms / `zhu-kou` 1187 ms, ~1.8 MB total | `assets/manifest.json` inside the published package |
+| Note in that manifest | contains: five "unknown origin" network sounds removed (konan / Spider-Man / best-anime-ever / bye-bye-soundbible / Mario jump …); the five replacements are described as "collected by the owner, no clear commercial licence" | same file (`_readme` field) |
+| Dependencies | `LidSound.deps.json` lists 20 packages: `NAudio` (7 packages, 2.2.1), `Velopack` 1.2.161, `System.Management` 8.0.0, `Microsoft.Win32.Registry` 4.7.0, …; self-contained .NET 8.0.31 | `LidSound.deps.json` inside the published package |
+| Assemblies | `LidSound` / `LidSound.Core` / `LidSound.Bootstrap` (0.3.0) | same |
+
+### 4. Its own CHANGELOG
+
+| Version | Statement |
+|---|---|
+| 0.1.0 (10-09) | "three built-in sounds … fully synthesised, no commercial music or third-party assets, zero licensing risk" |
+| 0.2.7 (10-10) | built-in sounds replaced with `konan-hiramekiyin` (default), Spider-Man, best-anime-ever, bye-bye-soundbible, Mario jump |
+| 0.3.0 (10-12) | "built-in sound copyright compliance: removed 5 network sounds of unknown origin…" |
+| 0.1.1 (10-09) | "auto-update points at the correct public repository; the first version pointed at a repository that is not public…" |
+| 0.2.9 (10-11) | "licence change: from this version a proprietary licence (EULA) applies" |
+
+### 5. Pricing and behaviour (its README)
+
+| Item | Content |
+|---|---|
+| Free part | the app plus five built-in sounds |
+| Paid part | changing the sound to your own: **US$19.90 one-time**, bound to one machine (`license.dat`, one licence per device) |
+| Detection | Windows lid-state notification; its CHANGELOG states that on a few machines whose firmware does not report the lid state the feature is silently disabled |
+| Memory | about 260 MB, as stated in its README (bundled .NET runtime) |
+
+### 6. Compared with this repository
 
 | Item | LidSound | This repo |
 |---|---|---|
-| Pricing | App and five built-in sounds are free; **changing the sound to your own costs US$19.90 one-time**, bound to one machine (`license.dat`, one licence per device) [source: its README] | Free, MIT |
-| Repository contents<br>(checked 2026-11-22) | **8 files**, all documentation/config; **zero source files** (`.cs`/`.csproj`/`.sln`); binaries ship through Releases (`LidSound-Setup.exe` / `LidSound-Portable.zip`) [source: its file tree `git/trees/HEAD?recursive=1`] | 12 text files, all source published |
-| Licence | Its `LICENSE` has been a proprietary EULA since **2026-10-11** (no redistribution, resale or reverse engineering); its README badge still reads MIT; the GitHub API reports `NOASSERTION / Other` [source: its LICENSE text and the GitHub API] | MIT (LICENSE and README agree) |
-| Built-in sounds | Five; a note in its installer's `assets/manifest.json` states the five replacement sounds were "collected by the owner, with no clear commercial licence" [source: its installer manifest] | No audio shipped (`.gitignore` excludes `sound.wav`) |
-| Detection | Windows lid-state notifications; its CHANGELOG states that on a few machines whose firmware does not report the lid state the feature is silently disabled [source: its CHANGELOG] | Wall-clock gap detection, firmware independent |
-| Playback moment | Plays as the lid opens | Plays when the desktop appears |
-| Size | Installer about 30 MB, single-file exe about 69 MB | Scripts total about 4 KB |
-| Memory | About 260 MB, as stated in its README | Measured about 60 MB |
+| Source | 0 files | 12 text files, all published |
+| Licence | MIT from 10-09 to 10-11, then proprietary EULA (badge unchanged) | MIT, LICENSE and README agree |
+| Sounds | five built-in, its own manifest note says "no clear commercial licence" | no audio shipped |
+| Detection | relies on firmware lid reports | wall-clock gap, firmware independent |
+| Playback moment | plays when the lid opens | plays when the desktop appears |
+| Size | installer ~30 MB (single-file exe ~69 MB) | scripts total ~4 KB |
+| Memory | ~260 MB (its own README) | measured ~60 MB |
+| Price | US$19.90 one-time, machine-bound | free |
 
-> Checked on **2026-11-22**, from its public repository, public docs and published installer. This repo gains nothing from it and makes no legal claim about it — the table simply records publicly verifiable facts so readers can judge for themselves.
+> Everything above was checked on **2026-11-22**, from its public repository, public docs and its own published installer. This repo gains nothing from it and makes no legal claim — the facts are simply recorded so readers can verify them.
 
 # 🔧 Part 2 · For people who like to tinker
 
