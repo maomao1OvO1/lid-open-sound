@@ -44,7 +44,7 @@ Features:
 - Pure PowerShell + VBS: **no admin rights, no driver, no installer**
 - Single-instance mutex — never double-plays
 - `events.log` records every wake / play attempt with timings
-- **Watchdog**: a scheduled task checks every 3 minutes and restarts the watcher if it was killed (`watchdog.log`)
+- **Watchdog**: a scheduled task checks every minute and restarts the watcher if it was killed (`watchdog.log`)
 - Change the sound by replacing `sound.wav` — no code edits
 
 ## How it works (the three pitfalls are the interesting part)
@@ -100,7 +100,7 @@ Before playing it also waits for `Audiosrv`, and uses the `PlaySync()` duration 
 `install.ps1` will:
 
 - add a per-user autostart entry `LidOpenSound` under `HKCU\Software\Microsoft\Windows\CurrentVersion\Run`
-- register the watchdog task `LidOpenSound-Watchdog` (every 3 minutes, restarts a killed watcher)
+- register the watchdog task `LidOpenSound-Watchdog` (every minute, restarts a killed watcher)
 - start the watcher immediately
 - print the current state and the log path
 
