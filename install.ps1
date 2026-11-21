@@ -7,6 +7,7 @@ $Dir = $PSScriptRoot
 $Ps1 = Join-Path $Dir 'lid-open-sound.ps1'
 $Vbs = Join-Path $Dir 'run_hidden.vbs'
 $Watchdog = Join-Path $Dir 'watchdog.ps1'
+$WatchdogVbs = Join-Path $Dir 'watchdog_hidden.vbs'
 $Wav = Join-Path $Dir 'sound.wav'
 $RunKey = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
 $Wscript = Join-Path $env:WINDIR 'System32\wscript.exe'
@@ -33,7 +34,7 @@ Write-Host ("autostart registered: LidOpenSound = {0}" -f $Value)
 
 # watchdog: re-create the scheduled task (every 1 minute) so a killed watcher comes back
 if (Test-Path -LiteralPath $Watchdog) {
-    $tr = 'powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -File "{0}"' -f $Watchdog
+    $tr = '"{0}" //B "{1}"' -f (Join-Path $env:WINDIR 'System32\wscript.exe'), $WatchdogVbs
     $out = & schtasks.exe /Create /TN $TaskName /TR $tr /SC MINUTE /MO 1 /F 2>&1
     if ($LASTEXITCODE -eq 0) {
         Write-Host ("watchdog task registered: {0} (every 1 minute)" -f $TaskName)
