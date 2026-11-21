@@ -44,7 +44,7 @@ Windows 笔记本「合盖睡眠 → 开盖唤醒 → 输密码 → **进桌面�
 - 纯 PowerShell + VBS，**无需管理员权限、无驱动、无安装包**
 - 单实例互斥锁，不会重复响
 - 日志 `events.log` 记录每次唤醒/播放耗时，方便排错
-- **看门狗**：计划任务每 3 分钟检查一次，进程被杀会自动拉起（记录到 `watchdog.log`）
+- **看门狗**：计划任务每 1 分钟检查一次，进程被杀会自动拉起（记录到 `watchdog.log`）
 - 换音效 = 替换 `sound.wav`，不用改代码
 
 ## 原理（这三个坑才是重点）
@@ -100,7 +100,7 @@ WAKE 检测到
 `install.ps1` 会做四件事：
 
 - 在 `HKCU\Software\Microsoft\Windows\CurrentVersion\Run` 写入 `LidOpenSound` 自启项（登录后隐藏启动）
-- 注册看门狗计划任务 `LidOpenSound-Watchdog`（每 3 分钟检查一次，进程没了自动拉起）
+- 注册看门狗计划任务 `LidOpenSound-Watchdog`（每 1 分钟检查一次，进程没了自动拉起）
 - 立刻启动一次监听进程
 - 打印当前状态与日志位置
 
