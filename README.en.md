@@ -12,14 +12,15 @@ Plays a custom sound **the moment you reach the desktop** after opening your lap
 
 ## Why this exists
 
-A similar tool exists: [LidSound](https://github.com/Jax-DevinLabs/LidSound) — a .NET Windows lid sound app whose repository carries an MIT license. It ships five built-in sounds for free; **changing the sound to your own costs US$19.90, one-time, bound to one machine** (`license.dat`, one license per device — price and licensing as stated in its README).
+A similar tool exists: [LidSound](https://github.com/Jax-DevinLabs/LidSound) — a .NET Windows lid sound app. It ships five built-in sounds for free; **changing the sound to your own costs US$19.90, one-time, bound to one machine** (`license.dat`, one license per device — price and licensing as stated in its README).
 
-Two facts about that repository, as of 2026-11:
+Facts about that repository, as of 2026-11:
 
 1. **No source code is published.** The repo contains 8 files — `README.md`, `CHANGELOG.md`, `LICENSE`, two files under `docs/`, `.gitignore`, and two issue templates — and **zero source files** (`.cs` / `.csproj` / `.sln` count: 0). Binaries are distributed through Releases (`LidSound-Setup.exe`, `LidSound-Portable.zip`).
-2. **It plays on lid open**, driven by Windows power events; it does not wait for the unlock.
+2. **Its LICENSE has been a proprietary EULA since 2026-10-11** (versions published under MIT before that date keep their MIT terms). That EULA prohibits redistribution, resale and reverse engineering. Its README still embeds an MIT license badge, while the GitHub API reports `NOASSERTION / Other`.
+3. **It plays on lid open**, driven by Windows power events; it does not wait for the unlock.
 
-Source: its repository file tree (`git/trees/HEAD?recursive=1`) and Releases list; if source code is published later, the repository as it stands then governs.
+Source: its repository file tree (`git/trees/HEAD?recursive=1`), the `LICENSE` text and its commit history; if anything changes, the repository as it stands then governs.
 
 This repo differs in one concrete way: the full source is here, MIT, readable and modifiable. Changing the sound is free, and it plays when the desktop appears.
 
