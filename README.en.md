@@ -128,7 +128,7 @@ Yes — install it on each one. It is free and there is nothing to activate.
 
 ## Similar tool: LidSound (factual record, checked 2026-11-22)
 
-Another tool exists in the same space: **LidSound** (`Jax-DevinLabs/LidSound`, .NET, Windows lid sound). The table below lists verifiable facts only, with sources, and **makes no judgement about its design or intent**. If it changes, its latest repository and licence govern.
+Another tool exists in the same space: **[LidSound](https://github.com/Jax-DevinLabs/LidSound)** (repo [`Jax-DevinLabs/LidSound`](https://github.com/Jax-DevinLabs/LidSound), .NET, Windows lid sound). The table below lists verifiable facts only, with sources, and **makes no judgement about its design or intent**. If it changes, its latest repository and licence govern.
 
 | Item | LidSound | This repo |
 |---|---|---|
