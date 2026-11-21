@@ -129,6 +129,25 @@
 
 ---
 
+---
+
+## 同类工具：LidSound（事实记录，核查日期 2026-11-22）
+
+同类中另有一个工具 **LidSound**（仓库 `Jax-DevinLabs/LidSound`，.NET，Windows 开盖音效）。下表只列可验证的事实并注明出处，**不评价其设计或动机**；若对方后续调整，以它最新的仓库与许可证为准。
+
+| 项目 | LidSound | 本仓库 |
+|---|---|---|
+| 收费方式 | 本体与 5 段内置音效免费；**换成自己的音频需 US$19.90 一次性买断**，按机器绑定（一机一码）〔来源：其 README〕 | 免费，MIT |
+| 仓库内容<br>（2026-11-22 核查） | 共 **8 个文件**，全部为文档与配置；**源码文件（`.cs`/`.csproj`/`.sln`）= 0**；对外交付物为 Releases 里的 `LidSound-Setup.exe` / `LidSound-Portable.zip`〔来源：其仓库文件树 `git/trees/HEAD?recursive=1`〕 | 12 个文本文件，源码全部公开 |
+| 许可证 | `LICENSE` 自 **2026-10-11** 起为专有 EULA（禁止再分发、倒卖、逆向工程）；其 README 内的徽章标注为 MIT；GitHub API 识别结果为 `NOASSERTION / Other`〔来源：其 LICENSE 全文与 GitHub API〕 | MIT（LICENSE 与 README 一致） |
+| 内置音效 | 5 段；其安装包内 `assets/manifest.json` 的备注字段写明：替换后的 5 款音效为"个人收集，无明确商用授权"〔来源：其安装包的 manifest 字段〕 | 不附带任何音频（`.gitignore` 排除 `sound.wav`） |
+| 检测方式 | 基于 Windows 的盖子状态通知；其 CHANGELOG 写明"极少数机型固件不上报开盖状态，功能会静默禁用"〔来源：其 CHANGELOG〕 | 墙钟间隙检测，不依赖固件 |
+| 播放时机 | 开盖即播 | 解锁进桌面时播放 |
+| 体积 | 安装包约 30 MB，单文件 exe 约 69 MB | 脚本合计约 4 KB |
+| 内存占用 | 其 README 自述约 260 MB | 实测约 60 MB |
+
+> 以上信息核查于 **2026-11-22**，均取自其公开仓库、公开文档与公开发布的安装包。本仓库不因此获得任何收益，也不对对方作出法律判断——只记录公开可查的事实，供使用者自行参考。
+
 # 🔧 第二部分 · 给想折腾的人
 
 ## 一句话原理
@@ -321,24 +340,6 @@ NAudio 功能强大，但对"播放一个 wav"来说太重——它要带 7 个�
 **Q：能跑在 Windows Server 上吗？**
 
 技术上可以（只要有用户会话和 `LogonUI`），但没有合盖场景，意义不大。
-
-## 和同类工具的事实对比
-
-仓库里有一个同类工具 **LidSound**（`Jax-DevinLabs/LidSound`，.NET，Windows 开盖音效）。以下均为可验证事实，标注了来源与时间：
-
-**它的收费方式**：程序本体和 5 段内置音效免费；**换成自己的音频需 US$19.90 一次性买断**，授权按机器绑定（一机一码）——价格与授权方式出自其 README。
-
-**它的仓库构成**（截至 2026-11，取自其仓库文件树 `git/trees/HEAD?recursive=1`）：共 8 个文件，全部是文档与配置（`README.md`、`CHANGELOG.md`、`LICENSE`、`docs/用户手册.md`、`docs/隐私说明.md`、`.gitignore`、两个 issue 模板），**源码文件（`.cs` / `.csproj` / `.sln`）数量为 0**；对外发布的是 Releases 里的编译产物 `LidSound-Setup.exe` / `LidSound-Portable.zip`。
-
-**它的许可证**：`LICENSE` 自 **2026-10-11 起为专有 EULA**（禁止再分发、倒卖与逆向工程），而 README 内嵌的 license 徽章目前仍显示 MIT；GitHub API 对该仓库的识别结果为 `NOASSERTION / Other`。若对方后续调整，以最新仓库为准。
-
-**它的音频来源**（取自其安装包内 `assets/manifest.json` 的备注字段）：2026-10-12 移除了 5 个"来源不明"的网络音效（涉及第三方 IP），替换的 5 款音效被其备注标注为"来源为个人收集，无明确商用授权"。
-
-**它的检测方式**：基于 Windows 的盖子状态通知（`GUID_LIDSWITCH_STATE_CHANGE`），其 CHANGELOG 自述"极少数机型固件不上报开盖状态，功能会静默禁用"。
-
-**本项目的差异**：源码全开（MIT）；不含任何音频（`.gitignore` 排除 `sound.wav`，请自备或使用 CC0 素材）；不依赖固件上报；等解锁进桌面才播；4 个脚本约 4 KB。
-
----
 
 ## 许可证
 
