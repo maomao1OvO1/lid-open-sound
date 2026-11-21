@@ -1,0 +1,5 @@
+# the sound file itself is not shipped (bring your own)
+sound.wav
+
+# runtime log
+events.log
