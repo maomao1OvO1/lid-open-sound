@@ -91,7 +91,7 @@ WAKE 检测到
 ## 安装
 
 1. 下载本仓库（或 `git clone`），放到任意目录，例如 `D:\tools\lid-open-sound`
-2. 准备一个音效文件，命名为 `sound.wav`，放到同一目录（任意 wav 都行）
+2. 准备一个音效文件，命名为 `sound.wav`，放到同一目录。**本仓库不附带任何音频**（`.gitignore` 已排除 `sound.wav`）：自己录制，或使用 CC0 / 无版权音效（如 freesound.org 上标注 CC0 的素材）
 3. 右键 `install.ps1` → 使用 PowerShell 运行（不需要管理员）
 
 `install.ps1` 会做三件事：
