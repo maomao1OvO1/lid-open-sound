@@ -1,8 +1,9 @@
-# Remove the autostart entry and stop the watcher.
+# Remove the autostart entry, the watchdog task, and stop the watcher.
 
 $ErrorActionPreference = 'SilentlyContinue'
 
 $RunKey = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Run'
+$TaskName = 'LidOpenSound-Watchdog'
 $Value = (Get-ItemProperty -Path $RunKey -Name 'LidOpenSound' -ErrorAction SilentlyContinue).LidOpenSound
 
 if ($Value) {
@@ -10,6 +11,13 @@ if ($Value) {
     Write-Host 'autostart entry removed: LidOpenSound'
 } else {
     Write-Host 'autostart entry was not present'
+}
+
+$taskOut = & schtasks.exe /Delete /TN $TaskName /F 2>&1
+if ($LASTEXITCODE -eq 0) {
+    Write-Host ("watchdog task removed: {0}" -f $TaskName)
+} else {
+    Write-Host ("watchdog task was not present: {0}" -f $TaskName)
 }
 
 $killed = 0
