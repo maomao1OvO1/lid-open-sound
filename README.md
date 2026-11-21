@@ -4,6 +4,10 @@
 
 Windows 笔记本「合盖睡眠 → 开盖唤醒 → 输密码 → **进桌面那一刻**」播放一声自定义音效。
 
+**MIT 许可证，全部源码都在本仓库**——可直接审查、修改、fork。
+
+关键词：Windows 开盖音效 / 笔记本开盖提示音 / 开盖解锁音效 / lid open sound / laptop lid chime / play sound on resume / Windows lid sound open source。
+
 ![platform](https://img.shields.io/badge/platform-Windows%2010%20%2F%2011-lightgrey)
 ![powershell](https://img.shields.io/badge/PowerShell-5.1%2B-blue)
 ![license](https://img.shields.io/badge/license-MIT-green)
